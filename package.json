@@ -1,0 +1,28 @@
+{
+  "name": "VeterinaryApp",
+  "version": "1.0.0",
+  "description": "Aplicação WEB para gerenciamento de uma clínica veterinária",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipemoutinho/VeterinaryApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/felipemoutinho/VeterinaryApp/issues"
+  },
+  "homepage": "https://github.com/felipemoutinho/VeterinaryApp#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
