@@ -1,30 +1,70 @@
 const { validationResult } = require('express-validator/check');
 const Animals = require('../models/animals');
 
+
 exports.getAnimals = (req,res,next) => {
-    res.status(200).json({
-        animals: [{name: 'Billy', age: 5,breed:'Dog',ownerName:'Felipe'},
-                  {name: 'Tody', age: 3,breed:'Cat',ownerName:'Gustavo'}]
+    Animals.find()
+    .then(result => {
+        if(!result){
+            const error = new Error('Could not find any animals.');
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json({animals: result});
+    })
+    .catch(err => {
+        if(!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     });
 };
 
-const post = new Animals({
-    name: 'B',
-    age: 3,
-    breed: 'Gato',
-    ownerName: 'Felipe'
-});
-
+exports.findOneAnimal = (req,res,next) => {
+    const animalId = req.params.animalId;
+    if(animalId.match(/^[0-9a-fA-F]{24}$/)){
+        Animals.findById(animalId)
+        .then(result => {
+            if(!result){
+                const error = new Error('Could not find your animal.');
+                error.statusCode = 404;
+                throw error;
+            }
+            res.status(200).json({animal:result});
+        })
+        .catch(err => {
+            if(!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        })
+    }
+    else {
+        const error = new Error('Invalid ID');
+        error.statusCode = 422;
+        throw error;
+    }
+};
 
 
 exports.createAnimals = (req,res,next) => {
     const erros = validationResult(req);
 
     if(!erros.isEmpty()){
-        return res.status(422).json({message:'Validation failed!', erros: erros.array()});
+        const error = new Error('Validation failed, entered data is incorrect.');
+        error.statusCode = 422;
+        throw error;
     }
 
     else {
+
+        const post = new Animals({
+            name: req.body.name,
+            age: req.body.age,
+            breed: req.body.breed,
+            ownerName: req.body.ownerName
+        });
+
         post.save()
         .then(result => {
         console.log(result);
@@ -33,6 +73,73 @@ exports.createAnimals = (req,res,next) => {
             post: result
             })
         })
-        .catch(err => {console.log(err)});
+        .catch(err => {
+            if(!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
+    }
+};
+
+exports.updateAnimal = (req,res,next) => {
+    const erros = validationResult(req);
+    console.log(req.body);
+    if(!erros.isEmpty()){
+        const error = new Error('Validation failed, some data is incorrect or invalid.');
+        error.statusCode = 422;
+        throw error;
+    }
+
+    const animalId = req.params.animalId;
+    
+    if(animalId.match(/^[0-9a-fA-F]{24}$/)){
+        Animals.findByIdAndUpdate(animalId,req.body, {new: true})
+        .then(result => {
+            if(!result){
+                const error = new Error('Could not find your animal.');
+                error.statusCode = 404;
+                throw error;
+            }
+            res.status(200).json({updated: result});
+        })
+        .catch(err => {
+            if(!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
+    }
+    else {
+        const error = new Error('Invalid ID');
+        error.statusCode = 422;
+        throw error;
+    }
+};
+
+exports.deleteAnimal = (req,res,next) => {
+    const animalId = req.params.animalId;
+    if(animalId.match(/^[0-9a-fA-F]{24}$/)){
+        Animals.findByIdAndRemove(animalId)
+        .then(result => {
+            if(!result) {
+                const error = new Error('Could not find and delete your animal.');
+                error.statusCode = 404;
+                throw error;
+            }
+            res.status(200).json({message:'Deleted animal.'});
+        })
+        .catch(err => {
+            if(!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        })
+    }
+    
+    else {
+        const error = new Error('Invalid ID');
+        error.statusCode = 422;
+        throw error;
     }
 };

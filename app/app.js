@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+
 const animalsRoutes = require('./routes/animals');
 
 const app = express();
@@ -16,6 +17,15 @@ app.use((req,res,next) => {
 });
 
 app.use('/api/animals',animalsRoutes);
+
+
+
+app.use((error, req, res, next) => {
+    console.log(error);
+    const status = error.statusCode || 500;
+    const message = error.message;
+    res.status(status).json({message: message});
+});
 
 mongoose.connect('mongodb://localhost:27017/veterinaryapi', { useNewUrlParser: true })
 .then(result => {app.listen(4200);
