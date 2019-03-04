@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 
 const animalsRoutes = require('./routes/animals');
+const veterinariansRoutes = require('./routes/veterinarian');
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.use((req,res,next) => {
 });
 
 app.use('/api/animals',animalsRoutes);
-
+app.use('/api/veterinarians', veterinariansRoutes);
 
 
 app.use((error, req, res, next) => {
