@@ -84,7 +84,7 @@ exports.createAnimals = (req,res,next) => {
 
 exports.updateAnimal = (req,res,next) => {
     const erros = validationResult(req);
-    console.log(req.body);
+    
     if(!erros.isEmpty()){
         const error = new Error('Validation failed, some data is incorrect or invalid.');
         error.statusCode = 422;
