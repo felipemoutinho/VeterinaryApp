@@ -2,7 +2,8 @@ const { validationResult } = require('express-validator/check');
 const Veterinarians = require('../models/veterinarian');
 
 exports.getVeterinarians = (req,res,next) => {
-    Veterinarians.find()
+    const {page = 1} = req.query;
+    Veterinarians.paginate({},{page,limit:10})
     .then(result => {
         if(!result){
             const error = new Error('Could not find any vet.');

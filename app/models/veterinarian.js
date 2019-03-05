@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 const Schema = mongoose.Schema;
 
 const veterinarianSchema = new Schema({
@@ -17,5 +18,5 @@ const veterinarianSchema = new Schema({
 },
 {   timestamps: true    }
 );
-
+veterinarianSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('Veterinarian', veterinarianSchema);

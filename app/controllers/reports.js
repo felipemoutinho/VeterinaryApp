@@ -28,7 +28,8 @@ exports.createReport = (req,res,next) => {
 };
 
 exports.getReports = (req,res,next) => {
-    Reports.find().populate(['veterinarian','animal'])
+    const { page= 1 } = req.query;
+    Reports.paginate({},{page, limit:10,populate:['veterinarian','animal']})
     .then(result => {
         if(!result) {
             const error = new Error('Could not find any report');

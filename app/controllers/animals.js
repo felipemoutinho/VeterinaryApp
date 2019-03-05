@@ -3,7 +3,8 @@ const Animals = require('../models/animals');
 
 
 exports.getAnimals = (req,res,next) => {
-    Animals.find()
+    const { page = 1 } = req.query;
+    Animals.paginate({},{page,limit:10})
     .then(result => {
         if(!result){
             const error = new Error('Could not find any animals.');
